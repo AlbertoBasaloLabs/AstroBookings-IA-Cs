@@ -2,7 +2,7 @@
 
 C# version of AstroBookings API developed with AI-Drive Development
 
-Baesd on [AstroBookings brieffing](https://github.com/AlbertoBasaloLabs/astro-bookings)
+Based on [AstroBookings brieffing](https://github.com/AlbertoBasaloLabs/astro-bookings)
 
 ---
 
