@@ -13,7 +13,7 @@ Explora y lee los archivos del proyecto para reunir contexto.
 
 ### Plantilla de Instrucciones
 Asegura un archivo corto (<= 100 oraciones) y oraciones breves (<= 100 caracteres).
-Sigue esta plantilla y guarda en un archivo markdown `./github/copilot-instructions.md`:
+Sigue esta plantilla y guarda en un archivo markdown `.github/copilot-instructions.md`:
 
 ````markdown
 # Instrucciones para Agentes
@@ -70,4 +70,4 @@ Sigue esta plantilla y guarda en un archivo markdown `./github/copilot-instructi
 
 ## Checklist de Salida
 
-- [ ] El resultado debe ser un archivo markdown llamado `./github/copilot-instructions.md`.
+- [ ] El resultado debe ser un archivo markdown llamado `.github/copilot-instructions.md`.
