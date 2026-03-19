@@ -1,36 +1,59 @@
 # AstroBookings-IA-Cs
 
-C# version of AstroBookings API developed with AI-Drive Development
+API minimal en C# (.NET 10) para gestionar cohetes, construida con desarrollo asistido por IA.
 
-Based on [AstroBookings brieffing](https://github.com/AlbertoBasaloLabs/astro-bookings)
+Basado en [AstroBookings](https://github.com/AlbertoBasaloLabs/astro-bookings/blob/main/README.es.md).
 
 ---
 
-## Rockets API
+## API de Cohetes
 
-The `feat/rockets` release adds CRUD endpoints for rocket management:
+Endpoints disponibles:
 
-- `POST /rockets`
-- `GET /rockets`
-- `GET /rockets/{id}`
-- `PUT /rockets/{id}`
-- `DELETE /rockets/{id}`
+- `POST /cohetes`
+- `GET /cohetes`
+- `GET /cohetes/{id}`
+- `PUT /cohetes/{id}`
+- `DELETE /cohetes/{id}`
+- `GET /salud`
 
-Payload validation rules:
+### Contrato JSON
 
-- `name`: required
-- `range`: one of `suborbital`, `orbital`, `moon`, `mars`
-- `capacity`: from `1` to `10`
+Solicitud (`POST`/`PUT`):
 
-## Run tests
+- `nombre` (obligatorio)
+- `alcance` (uno de: `suborbital`, `orbital`, `luna`, `marte`)
+- `capacidad` (entre `1` y `10`)
 
-```bash
+Respuesta de cohete:
+
+- `id`
+- `nombre`
+- `alcance` (`valor`)
+- `capacidad`
+
+Respuesta de salud:
+
+- `estado`
+- `fechaHora`
+
+## Ejecución
+
+```powershell
+dotnet restore AstroBookingsAPI/AstroBookingsAPI.csproj
+dotnet build AstroBookingsAPI/AstroBookingsAPI.csproj
+dotnet run --project AstroBookingsAPI/AstroBookingsAPI.csproj
+```
+
+## Pruebas
+
+```powershell
 dotnet test AstroBookingsAPI.E2ETests/AstroBookingsAPI.E2ETests.csproj
 ```
 
-- **Author**: [Alberto Basalo](https://albertobasalo.dev)
-- **Ai Code Academy en Español**: [AI code Academy](https://aicode.academy)
-- **Socials**:
+- **Autor**: [Alberto Basalo](https://albertobasalo.dev)
+- **AI Code Academy en Español**: [AI Code Academy](https://aicode.academy)
+- **Redes**:
   - [X](https://x.com/albertobasalo)
   - [LinkedIn](https://www.linkedin.com/in/albertobasalo/)
   - [GitHub](https://github.com/albertobasalo)

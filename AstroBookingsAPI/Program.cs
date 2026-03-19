@@ -1,69 +1,72 @@
-using AstroBookingsAPI.Rockets;
+using System.Text.Json.Serialization;
+using AstroBookingsAPI.Cohetes;
 
-var builder = WebApplication.CreateBuilder(args);
+var constructorAplicacion = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddOpenApi();
-builder.Services.AddSingleton<IRocketRepository, InMemoryRocketRepository>();
+constructorAplicacion.Services.AddOpenApi();
+constructorAplicacion.Services.AddSingleton<IRepositorioCohetes, RepositorioCohetesEnMemoria>();
 
-var app = builder.Build();
+var aplicacion = constructorAplicacion.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (aplicacion.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    aplicacion.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+aplicacion.UseHttpsRedirection();
 
-app.MapGet("/health", () => Results.Ok(new HealthResponse("ok", DateTimeOffset.UtcNow)));
+aplicacion.MapGet("/salud", () => Results.Ok(new RespuestaSalud("ok", DateTimeOffset.UtcNow)));
 
-RouteGroupBuilder rockets = app.MapGroup("/rockets");
+RouteGroupBuilder cohetes = aplicacion.MapGroup("/cohetes");
 
-rockets.MapPost("/", (UpsertRocketRequest request, IRocketRepository repository) =>
+cohetes.MapPost("/", (SolicitudGuardarCohete solicitud, IRepositorioCohetes repositorio) =>
 {
-    Dictionary<string, string[]> errors = RocketValidation.Validate(request);
-    if (errors.Count > 0)
+    Dictionary<string, string[]> errores = ValidadorCohete.Validar(solicitud);
+    if (errores.Count > 0)
     {
-        return Results.ValidationProblem(errors);
+        return Results.ValidationProblem(errores);
     }
 
-    RocketRange.TryCreate(request.Range, out RocketRange range);
-    Rocket rocket = repository.Create(request.Name.Trim(), range, request.Capacity);
+    AlcanceCohete.IntentarCrear(solicitud.Alcance, out AlcanceCohete alcance);
+    Cohete cohete = repositorio.Crear(solicitud.Nombre.Trim(), alcance, solicitud.Capacidad);
 
-    return Results.Created($"/rockets/{rocket.Id}", rocket);
+    return Results.Created($"/cohetes/{cohete.Id}", cohete);
 });
 
-rockets.MapGet("/", (IRocketRepository repository) => Results.Ok(repository.GetAll()));
+cohetes.MapGet("/", (IRepositorioCohetes repositorio) => Results.Ok(repositorio.ObtenerTodos()));
 
-rockets.MapGet("/{id:guid}", (Guid id, IRocketRepository repository) =>
+cohetes.MapGet("/{id:guid}", (Guid id, IRepositorioCohetes repositorio) =>
 {
-    Rocket? rocket = repository.GetById(id);
-    return rocket is null ? Results.NotFound() : Results.Ok(rocket);
+    Cohete? cohete = repositorio.ObtenerPorId(id);
+    return cohete is null ? Results.NotFound() : Results.Ok(cohete);
 });
 
-rockets.MapPut("/{id:guid}", (Guid id, UpsertRocketRequest request, IRocketRepository repository) =>
+cohetes.MapPut("/{id:guid}", (Guid id, SolicitudGuardarCohete solicitud, IRepositorioCohetes repositorio) =>
 {
-    Dictionary<string, string[]> errors = RocketValidation.Validate(request);
-    if (errors.Count > 0)
+    Dictionary<string, string[]> errores = ValidadorCohete.Validar(solicitud);
+    if (errores.Count > 0)
     {
-        return Results.ValidationProblem(errors);
+        return Results.ValidationProblem(errores);
     }
 
-    RocketRange.TryCreate(request.Range, out RocketRange range);
-    Rocket? rocket = repository.Update(id, request.Name.Trim(), range, request.Capacity);
+    AlcanceCohete.IntentarCrear(solicitud.Alcance, out AlcanceCohete alcance);
+    Cohete? cohete = repositorio.Actualizar(id, solicitud.Nombre.Trim(), alcance, solicitud.Capacidad);
 
-    return rocket is null ? Results.NotFound() : Results.Ok(rocket);
+    return cohete is null ? Results.NotFound() : Results.Ok(cohete);
 });
 
-rockets.MapDelete("/{id:guid}", (Guid id, IRocketRepository repository) =>
+cohetes.MapDelete("/{id:guid}", (Guid id, IRepositorioCohetes repositorio) =>
 {
-    bool deleted = repository.Delete(id);
-    return deleted ? Results.NoContent() : Results.NotFound();
+    bool eliminado = repositorio.Eliminar(id);
+    return eliminado ? Results.NoContent() : Results.NotFound();
 });
 
-app.Run();
+aplicacion.Run();
 
 public partial class Program;
 
-public sealed record HealthResponse(string Status, DateTimeOffset DateTime);
+public sealed record RespuestaSalud(
+    [property: JsonPropertyName("estado")] string Estado,
+    [property: JsonPropertyName("fechaHora")] DateTimeOffset FechaHora);

@@ -1,5 +1,5 @@
 @AstroBookingsAPI_HostAddress = http://localhost:5000
 
-### Health status
-GET {{AstroBookingsAPI_HostAddress}}/health
+### Estado de salud
+GET {{AstroBookingsAPI_HostAddress}}/salud
 Accept: application/json
