@@ -64,4 +64,6 @@ rockets.MapDelete("/{id:guid}", (Guid id, IRocketRepository repository) =>
 
 app.Run();
 
+public partial class Program;
+
 public sealed record HealthResponse(string Status, DateTimeOffset DateTime);
